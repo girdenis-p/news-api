@@ -1,5 +1,4 @@
-const { selectArticleById } = require("../models/articles.models")
-const { selectArticles } = require("../models/articles.model.js")
+const { selectArticleById, selectArticles } = require("../models/articles.models")
 
 module.exports = {
 

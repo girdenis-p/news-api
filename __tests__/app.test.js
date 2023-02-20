@@ -114,4 +114,48 @@ describe('app', () => {
       })
     })
   })
+
+  describe('/api/articles/:article_id/comments', () => {
+    describe('GET', () => {
+      it('200: responds with an empty comments array when valid :article_id is given for an article with no comments', () => {
+        return request(app)
+          .get('/api/articles/2/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toEqual([]);
+          })
+      })
+
+      it('200: responds with an array of comments objects when corresponding to given :article_id', () => {
+        return request(app)
+          .get('/api/articles/3/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            const expected = [
+              {
+                comment_id: 10,
+                body: 'git push origin master',
+                article_id: 3,
+                author: 'icellusedkars',
+                votes: 0,
+                created_at: '2020-06-20T07:24:00.000Z'
+              },
+              {
+                comment_id: 11,
+                body: 'Ambidextrous marsupial',
+                article_id: 3,
+                author: 'icellusedkars',
+                votes: 0,
+                created_at: '2020-09-19T23:10:00.000Z'
+              }
+            ];
+            expect(comments).toEqual(expected);
+          })
+      })
+    })
+  })
 })

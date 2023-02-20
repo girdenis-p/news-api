@@ -10,6 +10,7 @@ module.exports = {
       LEFT OUTER JOIN comments coms
         ON arts.article_id = coms.article_id
     GROUP BY arts.author, title, arts.article_id, topic, arts.created_at, arts.votes, article_img_url
+    ORDER BY arts.created_at DESC;
     `)
       .then(({ rows }) => {
         rows.forEach(row => {

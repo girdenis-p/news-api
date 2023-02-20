@@ -98,6 +98,20 @@ describe('app', () => {
             expect(articleWithId9.comment_count).toBe(2);
           })
       })
+
+      it('200: responds with an array sorted by date in descending order', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { articles } = body;
+
+            expect(articles).toBeSorted({
+              key: 'created_at',
+              descending: true
+            })
+          })
+      })
     })
   })
 })

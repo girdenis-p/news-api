@@ -1,7 +1,7 @@
 const express = require('express');
 const { getArticleById, getArticles } = require('./controllers/articles.controllers');
 const { getTopics } = require('./controllers/topics.controllers');
-const { handle500StatusCodes, handle400StatusCodes, handlePSQLErrors } = require('./errors');
+const { handle500StatusCodes, handlePSQLErrors, handleCustomErrors } = require('./errors');
 
 const app = express();
 
@@ -16,7 +16,7 @@ app.all('/*', (req, res, next) => {
 })
 
 app.use(handlePSQLErrors);
-app.use(handle400StatusCodes);
+app.use(handleCustomErrors);
 app.use(handle500StatusCodes);
 
 module.exports = app;

@@ -12,6 +12,19 @@ describe('app', () => {
 
   afterAll(() => db.end());
 
+  describe('*', () => {
+    it('404: responds with a message if endpoint does not exist', () => {
+      return request(app)
+        .get('/api/not_a_valid_endpoint')
+        .expect(404)
+        .then(({ body }) => {
+          const { msg } = body;
+
+          expect(msg).toBe('Endpoint /api/not_a_valid_endpoint not found!');
+        })
+    })
+  })
+
   describe('/api/topics', () => {
     describe('GET', () => {
       it('200: responses with topics array each containing slug and description properties', () => {

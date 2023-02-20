@@ -1,10 +1,8 @@
 const express = require('express');
 const { getTopics } = require('./controllers/topics.controllers');
-const { handle500StatusCodes, catch404StatusCodes, catch505StatusCodes } = require('./errors');
+const { handle500StatusCodes, catch404StatusCodes } = require('./errors');
 
 const app = express();
-
-app.use(catch505StatusCodes);
 
 app.get('/api/topics', getTopics);
 

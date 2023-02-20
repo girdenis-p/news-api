@@ -101,4 +101,65 @@ describe('app', () => {
       })
     })
   })
+  
+  describe('/api/articles', () => {
+    describe('GET', () => {
+      it('200: responds with an array of article objects, each with all the article properties and comment count', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { articles } = body;
+
+            expect(Array.isArray(articles)).toBe(true);
+            expect(articles).toHaveLength(12);
+
+            for (const article of articles) {
+              expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_img_url: expect.any(String),
+                comment_count: expect.any(Number)
+              })
+            }
+          })
+      })
+
+      it('200: responds with correct comment_count for articles', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { articles } = body;
+            const articleWithId1 = articles.find(({ article_id }) => {
+              return article_id === 1;
+            });
+            const articleWithId9 = articles.find(({ article_id }) => {
+              return article_id === 9;
+            })
+
+            expect(articleWithId1.comment_count).toBe(11);
+            expect(articleWithId9.comment_count).toBe(2);
+          })
+      })
+
+      it('200: responds with an array sorted by date in descending order', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { articles } = body;
+
+            expect(articles).toBeSorted({
+              key: 'created_at',
+              descending: true
+            })
+          })
+      })
+    })
+  })
 })

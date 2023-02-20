@@ -88,6 +88,17 @@ describe('app', () => {
             expect(msg).toBe('Endpoint /api/articles/999999 not found!');
           })
       })
+
+      it('400: responds when passed a non numeric article_id', () => {
+        return request(app)
+          .get('/api/articles/not_a_valid_article_id')
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id');
+          })
+      })
     })
   })
 })

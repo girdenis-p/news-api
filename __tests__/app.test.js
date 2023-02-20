@@ -15,7 +15,28 @@ describe('app', () => {
   describe('/api/topics', () => {
     describe('GET', () => {
       it('200: responses with topics array each containing slug and description properties', () => {
-        
+        return request(app)
+          .get('/api/topics')
+          .expect(200)
+          .then(({ body }) => {
+            const { topics } = body;
+
+            const expected = [
+              {
+                description: 'The man, the Mitch, the legend',
+                slug: 'mitch'
+              },
+              {
+                description: 'Not dogs',
+                slug: 'cats'
+              },
+              {
+                description: 'what books are made of',
+                slug: 'paper'
+              }
+            ];
+            expect(topics).toEqual(expected);
+          })
       })
     })
   })

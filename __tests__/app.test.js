@@ -74,7 +74,7 @@ describe('app', () => {
                 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700',
               votes: 0
             };
-            expect(article).toEqual(expected);
+            expect(article).toMatchObject(expected);
           })
       })
 

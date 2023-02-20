@@ -80,6 +80,24 @@ describe('app', () => {
             }
           })
       })
+
+      it('200: responds with correct comment_count for articles', () => {
+        return request(app)
+          .get('/api/articles')
+          .expect(200)
+          .then(({ body }) => {
+            const { articles } = body;
+            const articleWithId1 = articles.find(({ article_id }) => {
+              return article_id === 1;
+            });
+            const articleWithId9 = articles.find(({ article_id }) => {
+              return article_id === 9;
+            })
+
+            expect(articleWithId1.comment_count).toBe(11);
+            expect(articleWithId9.comment_count).toBe(2);
+          })
+      })
     })
   })
 })

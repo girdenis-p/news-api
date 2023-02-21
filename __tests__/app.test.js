@@ -205,6 +205,28 @@ describe('app', () => {
             expect(comments[1]).toMatchObject(expected[1]);
           })
       })
+
+      it('400: responds when given an invalid :article_id', () => {
+        return request(app)
+          .get('/api/articles/invalid_article_id/comments')
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when given a valid :article_id that does not exist', () => {
+        return request(app)
+          .get('/api/articles/654321/comments')
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Article with article_id 654321 does not exist')
+          })
+      })
     })
   })
 })

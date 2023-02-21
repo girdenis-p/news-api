@@ -23,7 +23,11 @@ module.exports = {
   getArticleCommentsByArticleId: function(req, res, next) {
     const { article_id } = req.params;
 
-    selectArticleCommentsByArticleId(article_id)
+    //Check article exists before selecting comments
+    selectArticleById(article_id)
+      .then(() => {
+        return selectArticleCommentsByArticleId(article_id)
+      })
       .then((comments) => {
         res.status(200).send({ comments });
       })

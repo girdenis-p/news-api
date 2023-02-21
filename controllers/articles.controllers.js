@@ -13,7 +13,7 @@ module.exports = {
   },
 
   getArticles: function(req, res, next) {
-    selectArticles()
+    selectArticles(req.query)
       .then((articles) => {
         res.status(200).send({ articles });
       })

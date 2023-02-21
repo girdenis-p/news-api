@@ -160,6 +160,24 @@ describe('app', () => {
             })
           })
       })
+
+      describe('queries', () => {
+        it('200: can be queried by topic, filtering articles that have that topic', () => {
+          return request(app)
+            .get('/api/articles?topic=mitch')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toHaveLength(11);
+
+              const expectedIds = [3, 6, 2, 12, 1, 9, 10, 4, 8, 11, 7];
+              for (let i = 0; i < articles.length; i++) {
+                expect(articles[i].article_id).toBe(expectedIds[i]);
+              }
+            })
+        })
+      })
     })
   })
 

@@ -1,7 +1,7 @@
 const express = require('express');
 
-const { postCommentByArticleId } = require('./controllers/comments.controllers');
-const { getArticleById, getArticles, getArticleCommentsByArticleId } = require('./controllers/articles.controllers');
+const { postCommentByArticleId, getArticleCommentsByArticleId } = require('./controllers/comments.controllers');
+const { getArticleById, getArticles } = require('./controllers/articles.controllers');
 const { getTopics } = require('./controllers/topics.controllers');
 const { handle500StatusCodes, handlePSQLErrors, handleCustomErrors } = require('./errors');
 

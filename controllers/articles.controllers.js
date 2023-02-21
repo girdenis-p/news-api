@@ -1,4 +1,4 @@
-const { selectArticleById, selectArticles, selectArticleCommentsByArticleId } = require("../models/articles.models")
+const { selectArticleById, selectArticles, } = require("../models/articles.models")
 
 module.exports = {
 
@@ -20,17 +20,5 @@ module.exports = {
       .catch(next);
   },
 
-  getArticleCommentsByArticleId: function(req, res, next) {
-    const { article_id } = req.params;
-
-    //Check article exists before selecting comments
-    selectArticleById(article_id)
-      .then(() => {
-        return selectArticleCommentsByArticleId(article_id)
-      })
-      .then((comments) => {
-        res.status(200).send({ comments });
-      })
-      .catch(next);
-  }
+  
 }

@@ -162,4 +162,29 @@ describe('app', () => {
       })
     })
   })
+
+  describe('/api/articles/:article_id/comments', () => {
+    describe('POST', () => {
+      it('201: responds with created comment object', () => {
+        return request(app)
+          .post('/api/articles/2/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'test comment'
+          })
+          .expect(201)
+          .then(({ body }) => {
+            const { comment } = body;
+
+            expect(comment).toMatchObject({
+              comment_id: 19,
+              author: 'butter_bridge',
+              body: 'test comment',
+              votes: 0,
+              'created_at': expect.any(String)
+            })
+          })
+      })
+    })
+  })
 })

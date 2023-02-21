@@ -229,6 +229,21 @@ describe('app', () => {
             expect(msg).toBe('Missing required fields from posted body')
           })
       })
+
+      it('401: responds when username given is not an existing user', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'not_an_existing_user',
+            body: 'test comment'
+          })
+          .expect(401)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Unable to post as "not_an_existing_user" as user does not exist')
+          })
+      })
     })
 
     describe('GET', () => {

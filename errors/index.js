@@ -5,6 +5,9 @@ module.exports = {
       next({status: 400, msg: 'Bad request, expected numeric id'})
     } else if (err.code === '23502') {
       next({status: 400, msg: 'Missing required fields from posted body'})
+    } else if (err.code === '23503') {
+      //Note this err.code is due a foreign key violation which currently is only caused by a non-existing user posting a comment
+      next({status: 401, msg: `Unable to post as "${req.body.username}" as user does not exist`})
     } else {
       next(err);
     }

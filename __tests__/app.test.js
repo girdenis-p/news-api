@@ -149,6 +149,32 @@ describe('app', () => {
             expect(msg).toBe('Article with article_id 1000 does not exist')
           })
       })
+
+      it('400: responds when patch body is malformed', () => {
+        return request(app)
+          .patch('/api/articles/1')
+          .send({})
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Body must contain an inc_votes property')
+          })
+      })
+
+      it('400: responds when inc_votes in non-numeric', () => {
+        return request(app)
+          .patch('/api/articles/1')
+          .send({
+            inc_votes: "one"
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('inc_votes must be of type number')
+          })
+      })
     })
   })
   

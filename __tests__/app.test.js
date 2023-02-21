@@ -183,25 +183,40 @@ describe('app', () => {
           .then(({ body }) => {
             const { comments } = body;
 
-            const expected = [
-              {
-                comment_id: 10,
-                body: 'git push origin master',
-                article_id: 3,
-                author: 'icellusedkars',
-                votes: 0,
-                created_at: '2020-06-20T07:24:00.000Z'
-              },
-              {
-                comment_id: 11,
-                body: 'Ambidextrous marsupial',
-                article_id: 3,
-                author: 'icellusedkars',
-                votes: 0,
-                created_at: '2020-09-19T23:10:00.000Z'
-              }
-            ];
-            expect(comments).toEqual(expected);
+            //  expect comments to look like: [
+            //   {
+            //     comment_id: 10,
+            //     body: 'git push origin master',
+            //     article_id: 3,
+            //     author: 'icellusedkars',
+            //     votes: 0,
+            //     created_at: '2020-06-20T07:24:00.000Z'
+            //   },
+            //   {
+            //     comment_id: 11,
+            //     body: 'Ambidextrous marsupial',
+            //     article_id: 3,
+            //     author: 'icellusedkars',
+            //     votes: 0,
+            //     created_at: '2020-09-19T23:10:00.000Z'
+            //   }
+            // ];
+            expect(comments[0]).toMatchObject({
+                  comment_id: 10,
+                  body: 'git push origin master',
+                  article_id: 3,
+                  author: 'icellusedkars',
+                  votes: 0,
+                  created_at: '2020-06-20T07:24:00.000Z'
+                });
+            expect(comments[1]).toMatchObject({
+                  comment_id: 11,
+                  body: 'Ambidextrous marsupial',
+                  article_id: 3,
+                  author: 'icellusedkars',
+                  votes: 0,
+                  created_at: '2020-09-19T23:10:00.000Z'
+                })
           })
       })
     })

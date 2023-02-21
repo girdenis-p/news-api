@@ -16,10 +16,14 @@ module.exports = {
     const { article_id } = req.params;
     const { inc_votes } = req.body
 
-    updateArticleVotes(article_id, inc_votes)
+    selectArticleById(article_id)
+      .then(() => {
+        return updateArticleVotes(article_id, inc_votes)
+      })
       .then((article) => {
         res.status(202).send({ article })
       })
+      .catch(next);
   },
 
   getArticles: function(req, res, next) {

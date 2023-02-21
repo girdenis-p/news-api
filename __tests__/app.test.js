@@ -121,6 +121,34 @@ describe('app', () => {
             })
           })
       })
+
+      it('400: responds when given invalid :article_id', () => {
+        return request(app)
+          .patch('/api/articles/invalid')
+          .send({
+            inc_votes: 12
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when given valid but non existent :article_id', () => {
+        return request(app)
+          .patch('/api/articles/1000')
+          .send({
+            inc_votes: 1
+          })
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Article with article_id 1000 does not exist')
+          })
+      })
     })
   })
   

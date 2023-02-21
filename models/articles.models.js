@@ -2,7 +2,7 @@ const db = require('../db/connection.js');
 
 module.exports = {
   
-  selectArticles: function({topic, sort_by}) {
+  selectArticles: function({topic, sort_by, order}) {
     let articlesQuery = `
     SELECT arts.author AS author, title, arts.article_id AS article_id, topic, arts.created_at AS created_at, arts.votes AS votes, article_img_url, COUNT(coms.article_id) AS comment_count
     FROM
@@ -35,7 +35,15 @@ module.exports = {
       return Promise.reject({status: 400, msg: `Articles cannot be sorted by "${sort_by}"`})
     }
 
-    articlesQuery += ` ORDER BY ${sort_by} DESC`
+    if (order === undefined) {
+      order = 'desc'
+    }
+
+    if (!['asc', 'desc'].includes(order)) {
+      return Promise.reject({status: 400, msg: `The only valid order options are "asc" or "desc", received: "${order}"`})
+    }
+
+    articlesQuery += ` ORDER BY ${sort_by} ${order}`
 
     return db.query(articlesQuery, queryParams)
       .then(({ rows }) => {

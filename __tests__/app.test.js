@@ -213,6 +213,31 @@ describe('app', () => {
               expect(msg).toBe('Articles cannot be sorted by "invalid_column"')
             })
         })
+
+        it('200: can be queried to set order to which articles are sorted by', () => {
+          return request(app)
+            .get('/api/articles?sort_by=title&order=asc')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toBeSorted({
+                key: 'title',
+                ascending: true
+              })
+            })
+        })
+
+        it('400: responds when given an invalid order value (not asc or desc)', () => {
+          return request(app)
+            .get('/api/articles?sort_by=author&order=invalid_order')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('The only valid order options are "asc" or "desc", received: "invalid_order"')
+            })
+        })
       })
     })
   })

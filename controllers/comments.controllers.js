@@ -4,7 +4,7 @@ const { insertCommentByArticleId, selectArticleCommentsByArticleId } = require("
 module.exports = {
 
   postCommentByArticleId: function(req, res, next) {
-    req.body.template = ['username', 'body']
+    req.bodyTemplate = ['username', 'body']
     
     const { article_id } = req.params;
 

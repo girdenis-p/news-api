@@ -8,7 +8,7 @@ module.exports = {
       const bodyProperties = Object.keys(req.body);
 
       //Templates are created when the controller for a given method and path is invoked
-      const missingProperty = req.body.template.find(property => {
+      const missingProperty = req.bodyTemplate.find(property => {
         return !bodyProperties.includes(property)
       });
 

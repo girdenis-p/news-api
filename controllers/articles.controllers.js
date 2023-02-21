@@ -14,7 +14,7 @@ module.exports = {
   },
 
   patchArticleById: function(req, res, next) {
-    req.body.template = ['inc_votes']
+    req.bodyTemplate = ['inc_votes']
 
     const { article_id } = req.params;
     const { inc_votes } = req.body

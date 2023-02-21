@@ -102,13 +102,13 @@ describe('app', () => {
     })
 
     describe('PATCH', () => {
-      it('202: responds with article incremented by inc_votes in body', () => {
+      it('200: responds with article incremented by inc_votes in body', () => {
         return request(app)
           .patch('/api/articles/1')
           .send({
             inc_votes: 23
           })
-          .expect(202)
+          .expect(200)
           .then(({ body }) => {
             const { article } = body;
 

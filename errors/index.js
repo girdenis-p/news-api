@@ -9,10 +9,15 @@ module.exports = {
   },
 
   handleCustomErrors: function(err, req, res, next) {
-    if (err.status === 400) {
-      res.status(400).send({ msg: err.msg })
-    } else if (err.status === 404) {
-      res.status(404).send({msg: `Endpoint ${req.url} not found!`})
+    if (err.status) {
+      //Default message handling
+      if (!err.msg) {
+        err.msg = {
+          404: `Endpoint ${req.url} not found!`
+        }[err.status];
+      }
+
+      res.status(err.status).send({ msg : err.msg });
     } else {
       next(err);
     }

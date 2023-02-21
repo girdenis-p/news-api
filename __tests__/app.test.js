@@ -85,7 +85,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Endpoint /api/articles/999999 not found!');
+            expect(msg).toBe('Article with article_id 999999 does not exist');
           })
       })
 

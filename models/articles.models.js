@@ -22,9 +22,7 @@ module.exports = {
   },
 
   updateArticleVotes(article_id, inc_votes) {
-    if (inc_votes === undefined) {
-      return Promise.reject({status: 400, msg: 'Body must contain an inc_votes property'})
-    } else if (typeof inc_votes !== 'number') {
+    if (inc_votes !== undefined && typeof inc_votes !== 'number') {
       return Promise.reject({status: 400, msg: 'inc_votes must be of type number'})
     }
 

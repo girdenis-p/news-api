@@ -158,7 +158,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Body must contain an inc_votes property')
+            expect(msg).toBe('Body must contain "inc_votes" property')
           })
       })
 
@@ -302,7 +302,21 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Missing required fields from posted body')
+            expect(msg).toBe('Body must contain "body" property')
+          })
+      })
+
+      it('400: responds when username is missing', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send({
+            body: 'Example body'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Body must contain "username" property')
           })
       })
 

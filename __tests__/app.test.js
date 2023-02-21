@@ -164,6 +164,88 @@ describe('app', () => {
   })
 
   describe('/api/articles/:article_id/comments', () => {
+    describe('POST', () => {
+      it('201: responds with created comment object', () => {
+        return request(app)
+          .post('/api/articles/2/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'test comment'
+          })
+          .expect(201)
+          .then(({ body }) => {
+            const { comment } = body;
+
+            expect(comment).toMatchObject({
+              comment_id: 19,
+              author: 'butter_bridge',
+              body: 'test comment',
+              votes: 0,
+              'created_at': expect.any(String)
+            })
+          })
+      })
+
+      it('400: responds when invalid :article_id given', () => {
+        return request(app)
+          .post('/api/articles/not_a_valid_article_id/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'test comment'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when valid but non existent :article_id given', () => {
+        return request(app)
+          .post('/api/articles/100000/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'test comment'
+          })
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Article with article_id 100000 does not exist')
+          })
+      })
+
+      it('400: responds when body is malformed', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'butter_bridge'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Missing required fields from posted body')
+          })
+      })
+
+      it('404: responds when username given is not an existing user', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'not_an_existing_user',
+            body: 'test comment'
+          })
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Unable to post as "not_an_existing_user" as user does not exist')
+          })
+      })
+    })
+
     describe('GET', () => {
       it('200: responds with an empty comments array when valid :article_id is given for an article with no comments', () => {
         return request(app)

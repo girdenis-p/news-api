@@ -6,7 +6,10 @@ module.exports = {
   postCommentByArticleId: function(req, res, next) {
     const { article_id } = req.params;
 
-    insertCommentByArticleId(article_id, req.body)
+    selectArticleById(article_id)
+      .then(() => {
+        return insertCommentByArticleId(article_id, req.body)
+      })
       .then((comment) => {
         res.status(201).send({ comment })
       })

@@ -185,6 +185,36 @@ describe('app', () => {
             })
           })
       })
+
+      it('400: responds when invalid :article_id given', () => {
+        return request(app)
+          .post('/api/articles/not_a_valid_article_id/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'test comment'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when valid but non existent :article_id given', () => {
+        return request(app)
+          .post('/api/articles/100000/comments')
+          .send({
+            username: 'butter_bridge',
+            body: 'test comment'
+          })
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Article with article_id 100000 does not exist')
+          })
+      })
     })
 
     describe('GET', () => {

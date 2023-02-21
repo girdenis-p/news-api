@@ -7,7 +7,10 @@ module.exports = {
       //23502 is caused due to a not null violation, this indicates that something is missing from the req.body
       const bodyProperties = Object.keys(req.body);
 
-      const missingProperty = req.body.template.find(property => !bodyProperties.includes(property));
+      //Templates are created when the controller for a given method and path is invoked
+      const missingProperty = req.body.template.find(property => {
+        return !bodyProperties.includes(property)
+      });
 
       next({status: 400, msg: `Body must contain "${missingProperty}" property`})
     } else if (err.code === '23503') {

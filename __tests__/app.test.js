@@ -100,6 +100,28 @@ describe('app', () => {
           })
       })
     })
+
+    describe('PATCH', () => {
+      it('202: responds with article incremented by inc_votes in body', () => {
+        return request(app)
+          .patch('/api/articles/1')
+          .send({
+            inc_votes: 23
+          })
+          .expect(202)
+          .then(({ body }) => {
+            const { article } = body;
+
+            expect(article).toMatchObject({
+              article_id: 1,
+              votes: 123,
+              topic: 'mitch',
+              author: 'butter_bridge',
+              body: 'I find this existence challenging'
+            })
+          })
+      })
+    })
   })
   
   describe('/api/articles', () => {

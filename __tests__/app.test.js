@@ -230,14 +230,14 @@ describe('app', () => {
           })
       })
 
-      it('401: responds when username given is not an existing user', () => {
+      it('404: responds when username given is not an existing user', () => {
         return request(app)
           .post('/api/articles/1/comments')
           .send({
             username: 'not_an_existing_user',
             body: 'test comment'
           })
-          .expect(401)
+          .expect(404)
           .then(({ body }) => {
             const { msg } = body;
 

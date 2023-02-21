@@ -186,6 +186,33 @@ describe('app', () => {
               expect(msg).toBe('Topic with slug "non_existent_topic" does not exist')
             })
         })
+
+        it('200: can be queried to select which column to sort_by', () => {
+          return request(app)
+            .get('/api/articles?topic=mitch&sort_by=article_id')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toHaveLength(11);
+
+              expect(articles).toBeSorted({
+                key: 'article_id',
+                descending: true
+              })
+            })
+        })
+
+        it('400: responds when queried to sort by invalid column', () => {
+          return request(app)
+            .get('/api/articles?sort_by=invalid_column')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Articles cannot be sorted by "invalid_column"')
+            })
+        })
       })
     })
   })

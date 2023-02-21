@@ -2,9 +2,9 @@ const db = require('../db/connection.js');
 
 module.exports = {
   
-  selectArticles: function({topic}) {
+  selectArticles: function({topic, sort_by}) {
     let articlesQuery = `
-    SELECT arts.author, title, arts.article_id, topic, arts.created_at, arts.votes, article_img_url, COUNT(coms.article_id) AS comment_count
+    SELECT arts.author AS author, title, arts.article_id AS article_id, topic, arts.created_at AS created_at, arts.votes AS votes, article_img_url, COUNT(coms.article_id) AS comment_count
     FROM
       articles arts
       LEFT OUTER JOIN comments coms
@@ -16,10 +16,26 @@ module.exports = {
       queryParams.push(topic)
     }
 
-    articlesQuery += `
-    GROUP BY arts.author, title, arts.article_id, topic, arts.created_at, arts.votes, article_img_url
-    ORDER BY arts.created_at DESC;
-    `
+    articlesQuery += ' GROUP BY arts.author, title, arts.article_id, topic, arts.created_at, arts.votes, article_img_url '
+    
+    if (sort_by === undefined) {
+      sort_by = 'created_at';
+    }
+
+    if (![
+      'author',
+      'title',
+      'article_id', 
+      'topic', 
+      'created_at', 
+      'votes', 
+      'article_img_url', 
+      'comment_count'
+    ].includes(sort_by)) {
+      return Promise.reject({status: 400, msg: `Articles cannot be sorted by "${sort_by}"`})
+    }
+
+    articlesQuery += ` ORDER BY ${sort_by} DESC`
 
     return db.query(articlesQuery, queryParams)
       .then(({ rows }) => {

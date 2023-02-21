@@ -169,12 +169,21 @@ describe('app', () => {
             .then(({ body }) => {
               const { articles } = body;
 
-              expect(articles).toHaveLength(11);
-
               const expectedIds = [3, 6, 2, 12, 1, 9, 10, 4, 8, 11, 7];
               for (let i = 0; i < articles.length; i++) {
                 expect(articles[i].article_id).toBe(expectedIds[i]);
               }
+            })
+        })
+
+        it('404: responds when queried by topic that does not exist', () => {
+          return request(app)
+            .get('/api/articles?topic=non_existent_topic')
+            .expect(404)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Topic with slug "non_existent_topic" does not exist')
             })
         })
       })

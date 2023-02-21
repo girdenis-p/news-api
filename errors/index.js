@@ -3,6 +3,8 @@ module.exports = {
   handlePSQLErrors: function(err, req, res, next) {
     if (err.code === '22P02') {
       next({status: 400, msg: 'Bad request, expected numeric id'})
+    } else if (err.code === '23502') {
+      next({status: 400, msg: 'Missing required fields from posted body'})
     } else {
       next(err);
     }

@@ -215,6 +215,20 @@ describe('app', () => {
             expect(msg).toBe('Article with article_id 100000 does not exist')
           })
       })
+
+      it('400: responds when body is malformed', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send({
+            username: 'butter_bridge'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Missing required fields from posted body')
+          })
+      })
     })
 
     describe('GET', () => {

@@ -2,6 +2,15 @@ const db = require('../db/connection.js');
 
 module.exports = {
 
+  selectArticleCommentsByArticleId: function(article_id) {
+    return db.query(`
+    SELECT * FROM comments
+    WHERE article_id = $1
+    `, [article_id])
+      .then(({ rows }) => rows);
+  },
+
+  
   selectArticles: function() {
     return db.query(`
     SELECT arts.author, title, arts.article_id, topic, arts.created_at, arts.votes, article_img_url, COUNT(coms.article_id) AS comment_count
@@ -30,7 +39,7 @@ module.exports = {
         if (rows.length) {
           return rows[0];
         } else {
-          return Promise.reject({status: 404});
+          return Promise.reject({status: 404, msg: `Article with article_id ${article_id} does not exist`});
         }
       })
   }

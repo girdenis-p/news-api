@@ -85,7 +85,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Endpoint /api/articles/999999 not found!');
+            expect(msg).toBe('Article with article_id 999999 does not exist');
           })
       })
 
@@ -183,6 +183,71 @@ describe('app', () => {
               votes: 0,
               'created_at': expect.any(String)
             })
+          })
+      })
+    })
+
+    describe('GET', () => {
+      it('200: responds with an empty comments array when valid :article_id is given for an article with no comments', () => {
+        return request(app)
+          .get('/api/articles/2/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toEqual([]);
+          })
+      })
+
+      it('200: responds with an array of comments objects when corresponding to given :article_id', () => {
+        return request(app)
+          .get('/api/articles/3/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            const expected = [
+              {
+                comment_id: 10,
+                body: 'git push origin master',
+                article_id: 3,
+                author: 'icellusedkars',
+                votes: 0,
+                created_at: '2020-06-20T07:24:00.000Z'
+              },
+              {
+                comment_id: 11,
+                body: 'Ambidextrous marsupial',
+                article_id: 3,
+                author: 'icellusedkars',
+                votes: 0,
+                created_at: '2020-09-19T23:10:00.000Z'
+              }
+            ];
+            expect(comments[0]).toMatchObject(expected[0]);
+            expect(comments[1]).toMatchObject(expected[1]);
+          })
+      })
+
+      it('400: responds when given an invalid :article_id', () => {
+        return request(app)
+          .get('/api/articles/invalid_article_id/comments')
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when given a valid :article_id that does not exist', () => {
+        return request(app)
+          .get('/api/articles/654321/comments')
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Article with article_id 654321 does not exist')
           })
       })
     })

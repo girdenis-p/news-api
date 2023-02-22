@@ -1,13 +1,9 @@
-const { readEndpoints } = require("../models/endpoints.models")
+const endpoints = require('../endpoints.json');
 
 module.exports = {
 
   getEndpoints: function(req, res, next) {
-    readEndpoints()
-      .then((endpoints) => {
-        res.status(200).send({ api : endpoints });
-      })
-      .catch(next)
+    res.status(200).send({ api: endpoints })
   }
 
 }

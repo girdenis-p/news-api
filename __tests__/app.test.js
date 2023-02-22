@@ -615,4 +615,42 @@ describe('app', () => {
       })
     })
   })
+
+  describe('/api/comments/:comment_id', () => {
+    describe('DELETE', () => {
+      it('204: deletes comment from database', () => {
+        return request(app)
+          .delete('/api/comments/2')
+          .expect(204)
+          .then(() => {
+            return db.query('SELECT * FROM comments WHERE comment_id = 2')
+          })
+          .then(({ rows }) => {
+            expect(rows).toHaveLength(0);
+          })
+      })
+
+      it('400: responses when given non numeric :comment_id', () => {
+        return request(app)
+          .delete('/api/comments/invalid_id')
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when :comment_id is numeric but does not exist', () => {
+        return request(app)
+          .delete('/api/comments/12345')
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Comment with comment_id 12345 does not exist')
+          })
+      })
+    })
+  })
 })

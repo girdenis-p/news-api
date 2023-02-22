@@ -252,6 +252,17 @@ describe('app', () => {
             })
         })
 
+        it('200: responds with an empty articles array when queried by a topic that exists but has no articles', () => {
+          return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toEqual([]);
+            })
+        })
+
         it('404: responds when queried by topic that does not exist', () => {
           return request(app)
             .get('/api/articles?topic=non_existent_topic')

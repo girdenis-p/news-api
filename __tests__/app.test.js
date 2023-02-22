@@ -111,6 +111,82 @@ describe('app', () => {
           })
       })
     })
+
+    describe('PATCH', () => {
+      it('200: responds with article incremented by inc_votes in body', () => {
+        return request(app)
+          .patch('/api/articles/1')
+          .send({
+            inc_votes: 23
+          })
+          .expect(200)
+          .then(({ body }) => {
+            const { article } = body;
+
+            expect(article).toMatchObject({
+              article_id: 1,
+              votes: 123,
+              topic: 'mitch',
+              author: 'butter_bridge',
+              body: 'I find this existence challenging'
+            })
+          })
+      })
+
+      it('400: responds when given invalid :article_id', () => {
+        return request(app)
+          .patch('/api/articles/invalid')
+          .send({
+            inc_votes: 12
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when given valid but non existent :article_id', () => {
+        return request(app)
+          .patch('/api/articles/1000')
+          .send({
+            inc_votes: 1
+          })
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Article with article_id 1000 does not exist')
+          })
+      })
+
+      it('400: responds when patch body is malformed', () => {
+        return request(app)
+          .patch('/api/articles/1')
+          .send({})
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Body must contain "inc_votes" property')
+          })
+      })
+
+      it('400: responds when inc_votes in non-numeric', () => {
+        return request(app)
+          .patch('/api/articles/1')
+          .send({
+            inc_votes: "one"
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('inc_votes must be of type number')
+          })
+      })
+    })
   })
   
   describe('/api/articles', () => {
@@ -170,6 +246,128 @@ describe('app', () => {
               descending: true
             })
           })
+      })
+
+      describe('queries', () => {
+        it('200: can be queried by topic, filtering articles that have that topic', () => {
+          return request(app)
+            .get('/api/articles?topic=mitch')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              const expectedIds = [3, 6, 2, 12, 1, 9, 10, 4, 8, 11, 7];
+              for (let i = 0; i < articles.length; i++) {
+                expect(articles[i].article_id).toBe(expectedIds[i]);
+              }
+            })
+        })
+
+        it('200: responds with an empty articles array when queried by a topic that exists but has no articles', () => {
+          return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toEqual([]);
+            })
+        })
+
+        it('404: responds when queried by topic that does not exist', () => {
+          return request(app)
+            .get('/api/articles?topic=non_existent_topic')
+            .expect(404)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Topic with slug "non_existent_topic" does not exist')
+            })
+        })
+
+        it('200: can be queried to select which column to sort_by', () => {
+          return request(app)
+            .get('/api/articles?topic=mitch&sort_by=article_id')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toHaveLength(11);
+
+              expect(articles).toBeSorted({
+                key: 'article_id',
+                descending: true
+              })
+            })
+        })
+
+        it('200: can be queried to sort_by any valid column', () => {
+          const requests = [];
+
+          for (const column of [
+            'topic',
+            'article_id',
+            'author',
+            'title',
+            'created_at',
+            'votes',
+            'article_img_url',
+            'comment_count'
+          ]) {
+            const req = 
+            request(app)
+              .get(`/api/articles?sort_by=${column}`)
+              .expect(200)
+              .then(({ body }) => {
+                const { articles } = body;
+
+                expect(articles).toBeSorted({
+                  key: column,
+                  descending: true
+                })
+              })
+            
+            requests.push(req);
+          }
+
+          return Promise.all(requests);
+        })
+
+        it('400: responds when queried to sort by invalid column', () => {
+          return request(app)
+            .get('/api/articles?sort_by=invalid_column')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Articles cannot be sorted by "invalid_column"')
+            })
+        })
+
+        it('200: can be queried to set order to which articles are sorted by', () => {
+          return request(app)
+            .get('/api/articles?sort_by=title&order=asc')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toBeSorted({
+                key: 'title',
+                ascending: true
+              })
+            })
+        })
+
+        it('400: responds when given an invalid order value (not asc or desc)', () => {
+          return request(app)
+            .get('/api/articles?sort_by=author&order=invalid_order')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('The only valid order options are "asc" or "desc", received: "invalid_order"')
+            })
+        })
       })
     })
   })
@@ -237,7 +435,21 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Missing required fields from posted body')
+            expect(msg).toBe('Body must contain "body" property')
+          })
+      })
+
+      it('400: responds when username is missing', () => {
+        return request(app)
+          .post('/api/articles/1/comments')
+          .send({
+            body: 'Example body'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Body must contain "username" property')
           })
       })
 

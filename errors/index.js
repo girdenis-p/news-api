@@ -4,7 +4,15 @@ module.exports = {
     if (err.code === '22P02') {
       next({status: 400, msg: 'Bad request, expected numeric id'})
     } else if (err.code === '23502') {
-      next({status: 400, msg: 'Missing required fields from posted body'})
+      //23502 is caused due to a not null violation, this indicates that something is missing from the req.body
+      const bodyProperties = Object.keys(req.body);
+
+      //Templates are created when the controller for a given method and path is invoked
+      const missingProperty = req.bodyTemplate.find(property => {
+        return !bodyProperties.includes(property)
+      });
+
+      next({status: 400, msg: `Body must contain "${missingProperty}" property`})
     } else if (err.code === '23503') {
       //Note this err.code is due a foreign key violation which currently is only caused by a non-existing user posting a comment
       next({status: 404, msg: `Unable to post as "${req.body.username}" as user does not exist`})

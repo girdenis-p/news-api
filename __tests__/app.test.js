@@ -564,4 +564,20 @@ describe('app', () => {
       })
     })
   })
+
+  describe('/api/comments/:comment_id', () => {
+    describe('DELETE', () => {
+      it('204: deletes comment from database', () => {
+        return request(app)
+          .delete('/api/comments/2')
+          .expect(204)
+          .then(() => {
+            return db.query('SELECT * FROM comments WHERE comment_id = 2')
+          })
+          .then(({ rows }) => {
+            expect(rows).toHaveLength(0);
+          })
+      })
+    })
+  })
 })

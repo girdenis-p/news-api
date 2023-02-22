@@ -1,5 +1,5 @@
 const { selectArticleById } = require("../models/articles.models");
-const { insertCommentByArticleId, selectArticleCommentsByArticleId } = require("../models/comments.models")
+const { insertCommentByArticleId, selectArticleCommentsByArticleId, removeCommentById } = require("../models/comments.models")
 
 module.exports = {
 
@@ -30,5 +30,14 @@ module.exports = {
         res.status(200).send({ comments });
       })
       .catch(next);
+  },
+
+  deleteCommentById: function(req, res, next) {
+    const { comment_id } = req.params;
+
+    removeCommentById(comment_id)
+      .then(() => {
+        res.sendStatus(204);
+      })
   }
 }

@@ -236,6 +236,128 @@ describe('app', () => {
             })
           })
       })
+
+      describe('queries', () => {
+        it('200: can be queried by topic, filtering articles that have that topic', () => {
+          return request(app)
+            .get('/api/articles?topic=mitch')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              const expectedIds = [3, 6, 2, 12, 1, 9, 10, 4, 8, 11, 7];
+              for (let i = 0; i < articles.length; i++) {
+                expect(articles[i].article_id).toBe(expectedIds[i]);
+              }
+            })
+        })
+
+        it('200: responds with an empty articles array when queried by a topic that exists but has no articles', () => {
+          return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toEqual([]);
+            })
+        })
+
+        it('404: responds when queried by topic that does not exist', () => {
+          return request(app)
+            .get('/api/articles?topic=non_existent_topic')
+            .expect(404)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Topic with slug "non_existent_topic" does not exist')
+            })
+        })
+
+        it('200: can be queried to select which column to sort_by', () => {
+          return request(app)
+            .get('/api/articles?topic=mitch&sort_by=article_id')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toHaveLength(11);
+
+              expect(articles).toBeSorted({
+                key: 'article_id',
+                descending: true
+              })
+            })
+        })
+
+        it('200: can be queried to sort_by any valid column', () => {
+          const requests = [];
+
+          for (const column of [
+            'topic',
+            'article_id',
+            'author',
+            'title',
+            'created_at',
+            'votes',
+            'article_img_url',
+            'comment_count'
+          ]) {
+            const req = 
+            request(app)
+              .get(`/api/articles?sort_by=${column}`)
+              .expect(200)
+              .then(({ body }) => {
+                const { articles } = body;
+
+                expect(articles).toBeSorted({
+                  key: column,
+                  descending: true
+                })
+              })
+            
+            requests.push(req);
+          }
+
+          return Promise.all(requests);
+        })
+
+        it('400: responds when queried to sort by invalid column', () => {
+          return request(app)
+            .get('/api/articles?sort_by=invalid_column')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Articles cannot be sorted by "invalid_column"')
+            })
+        })
+
+        it('200: can be queried to set order to which articles are sorted by', () => {
+          return request(app)
+            .get('/api/articles?sort_by=title&order=asc')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toBeSorted({
+                key: 'title',
+                ascending: true
+              })
+            })
+        })
+
+        it('400: responds when given an invalid order value (not asc or desc)', () => {
+          return request(app)
+            .get('/api/articles?sort_by=author&order=invalid_order')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('The only valid order options are "asc" or "desc", received: "invalid_order"')
+            })
+        })
+      })
     })
   })
 

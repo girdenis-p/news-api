@@ -1,3 +1,4 @@
+const { selectTopicBySlug, checkSlugExistsOrUndefined } = require("../models/topics.models");
 const { selectArticleById, selectArticles, updateArticleVotes } = require("../models/articles.models")
 
 
@@ -30,7 +31,12 @@ module.exports = {
   },
 
   getArticles: function(req, res, next) {
-    selectArticles()
+    const { topic , sort_by, order} = req.query;
+
+    checkSlugExistsOrUndefined(topic)
+      .then(() => {
+        return selectArticles({ topic, sort_by, order})
+      })
       .then((articles) => {
         res.status(200).send({ articles });
       })

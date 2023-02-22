@@ -1,4 +1,4 @@
-const { selectTopicBySlug } = require("../models/topics.models");
+const { selectTopicBySlug, checkSlugExistsOrUndefined } = require("../models/topics.models");
 const { selectArticleById, selectArticles, updateArticleVotes } = require("../models/articles.models")
 
 
@@ -31,20 +31,11 @@ module.exports = {
   },
 
   getArticles: function(req, res, next) {
+    const { topic , sort_by, order} = req.query;
 
-    //This promise will only resolve if either there is no queried topic or the queried topic exists
-    new Promise((resolve, reject) => {
-      const { topic: slug } = req.query
-
-      if (slug === undefined) {
-        resolve();
-      } else {
-        selectTopicBySlug(slug)
-          .then(resolve, reject);
-      }
-    })
+    checkSlugExistsOrUndefined(topic)
       .then(() => {
-        return selectArticles(req.query)
+        return selectArticles({ topic, sort_by, order})
       })
       .then((articles) => {
         res.status(200).send({ articles });

@@ -7,14 +7,18 @@ module.exports = {
       .then(({ rows }) => rows);
   },
   
-  selectTopicBySlug(slug) {
+  checkSlugExistsOrUndefined(slug) {
+    if (slug === undefined) {
+      return Promise.resolve();
+    }
+
     return db.query(`
     SELECT * FROM topics
     WHERE slug = $1
     `, [slug])
       .then(({ rows }) => {
         if (rows.length) {
-          return rows[0];
+          return Promise.resolve();
         } else {
           return Promise.reject({status: 404, msg: `Topic with slug "${slug}" does not exist`});
         }

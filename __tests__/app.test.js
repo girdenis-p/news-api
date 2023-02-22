@@ -25,6 +25,46 @@ describe('app', () => {
     })
   })
 
+  describe('/api', () => {
+    describe('GET', () => {
+      it('200: responses with an object containing all endpoints, and their method', () => {
+        return request(app)
+          .get('/api')
+          .expect(200)
+          .then(({ body }) => {
+            const { api } = body;
+
+            const expectedMatch = {
+              '/api' : {
+                'GET': expect.any(Object)
+              },
+              '/api/topics': {
+                'GET': expect.any(Object)
+              },
+              '/api/articles': {
+                'GET': expect.any(Object)
+              },
+              '/api/articles/:article_id': {
+                'GET': expect.any(Object),
+                'PATCH': expect.any(Object)
+              },
+              '/api/articles/:article_id/comments': {
+                'GET': expect.any(Object),
+                'POST': expect.any(Object)
+              },
+              '/api/users': {
+                'GET': expect.any(Object)
+              },
+              '/api/comments/:comment_id': {
+                'DELETE': expect.any(Object)
+              }
+            }
+            expect(api).toMatchObject(expectedMatch)
+          })
+      })
+    })
+  })
+
   describe('/api/topics', () => {
     describe('GET', () => {
       it('200: responses with topics array each containing slug and description properties', () => {

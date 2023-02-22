@@ -5,10 +5,13 @@ const { postCommentByArticleId, getArticleCommentsByArticleId, deleteCommentById
 const { getTopics } = require('./controllers/topics.controllers');
 const { handle500StatusCodes, handlePSQLErrors, handleCustomErrors } = require('./errors');
 const { getUsers } = require('./controllers/users.controllers');
+const { getEndpoints } = require('./controllers/endpoints.controllers');
 
 const app = express();
 
 app.use(express.json());
+
+app.get('/api', getEndpoints);
 
 app.get('/api/topics', getTopics);
 

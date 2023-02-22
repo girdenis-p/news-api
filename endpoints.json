@@ -1,27 +1,126 @@
 {
-  "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
-  },
-  "GET /api/topics": {
-    "description": "serves an array of all topics",
-    "queries": [],
-    "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+  "/api": {
+    "GET": {
+      "description": "serves up all endpoints available on this api"
     }
   },
-  "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
-    "exampleResponse": {
-      "articles": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+  "/api/articles": {
+    "GET": {
+      "description": "serves up all articles",
+      "example response": {
+        "articles": [
+          {
+            "author": "Foo Bar",
+            "title": "Foo",
+            "article_id": 1,
+            "topic": "Foosball",
+            "created_at": "1970-01-01T00:00:00.000Z",
+            "votes": 100,
+            "article_img_url": "example.jpeg",
+            "comment_count": 2
+          }
+        ]
+      }
+    }
+  },
+  "/api/articles/:article_id": {
+    "requirements": ":article_id must be numeric",
+    "GET": {
+      "description": "serves up an article including it's body",
+      "example response": {
+        "article": {
+          "author": "Foo Bar",
+            "title": "Foo",
+            "body": "Foo foo foo",
+            "article_id": 1,
+            "topic": "Foosball",
+            "created_at": "1970-01-01T00:00:00.000Z",
+            "votes": 100,
+            "article_img_url": "example.jpeg",
+            "comment_count": 2
         }
-      ]
+      }
+    },
+    "PATCH": {
+      "description": "increments the votes on an article by inc_votes, allows decrementing when inc_votes is negative",
+      "required fields": {
+        "inc_votes": "number"
+      }
+    }
+  },
+  "/api/articles/:article_id/comments": {
+    "requirements": ":article_id must be numeric",
+    "GET": {
+      "description": "serves up all the comments for an article",
+      "example response": {
+        "comments": [
+          {
+            "comment_id": 1,
+            "votes": 21,
+            "created_at": "1970-01-01T01:00:00.000Z",
+            "author": "Foo Foo",
+            "body": "Foo",
+            "article_id": 1
+          },
+          {
+            "comment_id": 2,
+            "votes": -5,
+            "created_at": "1970-01-01T02:00:00.000Z",
+            "author": "Example User",
+            "body": "Foo bar foobar",
+            "article_id": 1
+          }
+        ]
+      }
+    },
+    "POST": {
+      "description": "posts a comment to an article, initialises votes at 0",
+      "required fields": {
+        "username": "string",
+        "body": "string"
+      }
+    }
+  },
+  "/api/comments/:comment_id": {
+    "requirements": ":comment_id must be numeric",
+    "DELETE": {
+      "description": "delete a comment"
+    }
+  },
+  "/api/topics": {
+    "GET": {
+      "description": "serves up all topics",
+      "example response": {
+        "topics": [
+          {
+            "slug": "Foosball",
+            "description": "Fooo"
+          },
+          {
+            "slug": "Bar",
+            "description": "Foos"
+          }
+        ]
+      }
+    }
+  },
+  "/api/users": {
+    "GET": {
+      "description": "serves up all users",
+      "example response": {
+        "users": [
+          {
+            "username": "Foo Bar",
+            "name": "Foo Bar",
+            "avatar_url": "example1.jpeg"
+          },
+          {
+            "username": "Example User",
+            "name": "Example",
+            "avatar_url": "example2.jpg"
+          }
+        ]
+      }
     }
   }
 }

@@ -290,6 +290,38 @@ describe('app', () => {
             })
         })
 
+        it('200: can be queried to sort_by any valid column', () => {
+          const requests = [];
+
+          for (const column of [
+            'topic',
+            'article_id',
+            'author',
+            'title',
+            'created_at',
+            'votes',
+            'article_img_url',
+            'comment_count'
+          ]) {
+            const req = 
+            request(app)
+              .get(`/api/articles?sort_by=${column}`)
+              .expect(200)
+              .then(({ body }) => {
+                const { articles } = body;
+
+                expect(articles).toBeSorted({
+                  key: column,
+                  descending: true
+                })
+              })
+            
+            requests.push(req);
+          }
+
+          return Promise.all(requests);
+        })
+
         it('400: responds when queried to sort by invalid column', () => {
           return request(app)
             .get('/api/articles?sort_by=invalid_column')

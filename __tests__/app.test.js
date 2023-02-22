@@ -78,6 +78,17 @@ describe('app', () => {
           })
       })
 
+      it('200: responds with article object containing comment count', () => {
+        return request(app)
+          .get('/api/articles/3')
+          .expect(200)
+          .then(({ body }) => {
+            const { article } = body;
+
+            expect(article.comment_count).toBe(2);
+          })
+      })
+
       it('404: responds when passed a valid article_id that does not exist', () => {
         return request(app)
           .get('/api/articles/999999')

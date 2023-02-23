@@ -5,12 +5,12 @@ const { postCommentByArticleId, getArticleCommentsByArticleId} = require('../con
 
 articleRouter.get('/', getArticles);
 
-articleRouter.get('/:article_id', getArticleById)
+articleRouter.route('/:article_id')
+  .get(getArticleById)
+  .patch(patchArticleById)
 
-articleRouter.patch('/:article_id', patchArticleById)
-
-articleRouter.post('/:article_id/comments', postCommentByArticleId)
-
-articleRouter.get('/:article_id/comments', getArticleCommentsByArticleId)
+articleRouter.route('/:article_id/comments')
+  .get(getArticleCommentsByArticleId)
+  .post(postCommentByArticleId)
 
 module.exports = articleRouter;

@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { handle500StatusCodes, handlePSQLErrors, handleCustomErrors } = require('./errors');
+const { handle500StatusCodes, handlePSQLErrors, handleCustomErrors, catchPaginationErrors } = require('./errors');
 
 const apiRouter = require('./routes/api-router')
 

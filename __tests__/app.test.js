@@ -438,6 +438,82 @@ describe('app', () => {
             })
         })
       })
+
+      describe('pagination', () => {
+        it('200: defaults to a limit of 10 and page 1', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id&order=asc')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toHaveLength(10)
+              for (const article of articles) {
+                expect(article.article_id).toBeLessThanOrEqual(10)
+              }
+            })
+        })
+
+        it('200: can limit number articles on page to passed limit', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id&order=asc&limit=3')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toHaveLength(3)
+              for (const article of articles) {
+                expect(article.article_id).toBeLessThanOrEqual(3)
+              }
+            })
+        })
+
+        it('200: can go to specifie page', () => {
+          return request(app)
+            .get('/api/articles?sort_by=article_id&order=asc&limit=5&p=3')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body
+
+              expect(articles).toHaveLength(2)
+              expect(articles[0].article_id).toBe(11)
+              expect(articles[1].article_id).toBe(12)
+            })
+        })
+
+        it('200: responds with a total_count of articles regardless of limit or page', () => {
+          return request(app)
+            .get('/api/articles?limit=3&p=3')
+            .expect(200)
+            .then(({ body }) => {
+              const { total_count } = body;
+
+              expect(total_count).toBe(12);
+            })
+        })
+
+        it('400: responds when passed non numeric limit', () => {
+          return request(app)
+            .get('/api/articles?limit=non_numeric_limit')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Limit must be numeric')
+            })
+        })
+
+        it('400: responds when passed non numeric p', () => {
+          return request(app)
+            .get('/api/articles?p=not_a_page')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Page must be numeric')
+            })
+        })
+      })
     })
 
     describe('POST', () => {

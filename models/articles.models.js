@@ -2,7 +2,7 @@ const db = require('../db/connection.js');
 
 module.exports = {
   
-  selectArticles({topic, sort_by, order}) {
+  selectArticles({topic, sort_by = 'created_at', order = 'desc', limit = 10, p = 1}) {
     let articlesQuery = `
     SELECT arts.author AS author, title, arts.article_id AS article_id, topic, arts.created_at AS created_at, arts.votes AS votes, article_img_url, COUNT(coms.article_id) AS comment_count
     FROM
@@ -17,10 +17,6 @@ module.exports = {
     }
 
     articlesQuery += ' GROUP BY arts.author, title, arts.article_id, topic, arts.created_at, arts.votes, article_img_url '
-    
-    if (sort_by === undefined) {
-      sort_by = 'created_at';
-    }
 
     if (![
       'author',
@@ -35,10 +31,6 @@ module.exports = {
       return Promise.reject({status: 400, msg: `Articles cannot be sorted by "${sort_by}"`})
     }
 
-    if (order === undefined) {
-      order = 'desc'
-    }
-
     if (!['asc', 'desc'].includes(order)) {
       return Promise.reject({status: 400, msg: `The only valid order options are "asc" or "desc", received: "${order}"`})
     }
@@ -47,11 +39,14 @@ module.exports = {
 
     return db.query(articlesQuery, queryParams)
       .then(({ rows }) => {
-        rows.forEach(row => {
-          row.comment_count = Number(row.comment_count);
+        const total_count = rows.length;
+        const articles = rows.slice((p - 1) * limit, p * limit)
+
+        articles.forEach(article => {
+          article.comment_count = Number(article.comment_count);
         })
 
-        return rows;
+        return {articles, total_count};
       });
   },
 

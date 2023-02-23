@@ -85,6 +85,12 @@
     "requirements": ":comment_id must be numeric",
     "DELETE": {
       "description": "delete a comment"
+    },
+    "PATCH": {
+      "description": "increments the votes on a comment by inc_votes, allows decrementing when inc_votes is negative",
+      "required fields": {
+        "inc_votes": "number"
+      }
     }
   },
   "/api/topics": {

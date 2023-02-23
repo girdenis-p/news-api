@@ -83,7 +83,8 @@ describe('app', () => {
               },
               '/api/comments/:comment_id': {
                 requirements,
-                DELETE
+                DELETE,
+                PATCH
               }
             }
             expect(api).toMatchObject(expectedMatch)

@@ -91,13 +91,25 @@ module.exports = {
   },
 
   insertArticle({author, title, body, topic, article_img_url }) {
+    const queryParams = [author, title, body, topic]
+
+    let columns = 'author, title, body, topic'
+    let values = '$1, $2, $3, $4'
+
+    //If article_img_url is not present then excluding it from the query with default it
+    if (article_img_url) {
+      values += ', $5'
+      columns += ', article_img_url'
+      queryParams.push(article_img_url)
+    }
+
     return db.query(`
     INSERT INTO articles
-      (author, title, body, topic, article_img_url)
+      (${columns})
     VALUES
-      ($1, $2, $3, $4, $5)
+      (${values})
     RETURNING *;
-    `, [author, title, body, topic, article_img_url])
+    `, queryParams)
       .then(({ rows }) => {
         const article = rows[0];
 

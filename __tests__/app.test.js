@@ -470,6 +470,22 @@ describe('app', () => {
           })
       })
 
+      it('200: defaults the url when not specified', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            author: "butter_bridge",
+            title: "Test Title",
+            body: "Test",
+            topic: "cats"
+          })
+          .then(({ body }) => {
+            const { article } = body
+
+            expect(article).toHaveProperty('article_img_url', 'https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700')
+          })
+      })
+
       it('400: responds when missing required keys', () => {
 
         const requests = [];

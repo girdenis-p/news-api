@@ -2,7 +2,7 @@ const db = require('../db/connection.js')
 
 module.exports = {
   
-  selectTopics: function() {
+  selectTopics() {
     return db.query('SELECT * FROM topics;')
       .then(({ rows }) => rows);
   },

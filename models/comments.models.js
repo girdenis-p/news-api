@@ -2,7 +2,7 @@ const db = require('../db/connection.js');
 
 module.exports = {
 
-  selectArticleCommentsByArticleId: function(article_id) {
+  selectArticleCommentsByArticleId(article_id) {
     return db.query(`
     SELECT * FROM comments
     WHERE article_id = $1

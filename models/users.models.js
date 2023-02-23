@@ -1,14 +1,14 @@
 const db = require('../db/connection.js')
 
 module.exports = {
-  selectUsers: function() {
+  selectUsers() {
     return db.query(`
     SELECT * FROM users;
     `)
       .then(({ rows }) => rows);
   },
 
-  selectUserByUsername: function(username) {
+  selectUserByUsername(username) {
     return db.query(`
     SELECT * FROM users
     WHERE username = $1

@@ -2,7 +2,7 @@ const db = require('../db/connection.js');
 
 module.exports = {
   
-  selectArticles: function({topic, sort_by, order}) {
+  selectArticles({topic, sort_by, order}) {
     let articlesQuery = `
     SELECT arts.author AS author, title, arts.article_id AS article_id, topic, arts.created_at AS created_at, arts.votes AS votes, article_img_url, COUNT(coms.article_id) AS comment_count
     FROM
@@ -69,7 +69,7 @@ module.exports = {
     .then(({ rows }) => rows[0]);
   },
 
-  selectArticleById: function(article_id) {
+  selectArticleById(article_id) {
     return db.query(`
     SELECT arts.author AS author, title, arts.article_id AS article_id, arts.body AS body, arts.created_at AS created_at, topic, arts.votes AS votes, article_img_url, COUNT(coms.article_id) AS comment_count
     FROM

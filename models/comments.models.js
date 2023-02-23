@@ -2,12 +2,17 @@ const db = require('../db/connection.js');
 
 module.exports = {
 
-  selectArticleCommentsByArticleId(article_id) {
+  selectArticleCommentsByArticleId(article_id, {limit = 10, p = 1}) {
     return db.query(`
     SELECT * FROM comments
     WHERE article_id = $1
     `, [article_id])
-      .then(({ rows }) => rows);
+      .then(({ rows }) => {
+        const total_count = rows.length;
+        const comments = rows.slice((p - 1) * limit, p * limit)
+
+        return {comments, total_count};
+      });
   },
 
   insertCommentByArticleId(article_id, {username, body}) {

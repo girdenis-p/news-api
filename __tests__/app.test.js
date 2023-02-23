@@ -792,6 +792,63 @@ describe('app', () => {
             expect(msg).toBe('Article with article_id 654321 does not exist')
           })
       })
+
+      describe('pagination', () => {
+        it('200: responds with queried limit number of comments', () => {
+          return request(app)
+            .get('/api/articles/1/comments?limit=3')
+            .expect(200)
+            .then(({ body }) => {
+              const { comments } = body;
+
+              expect(comments).toHaveLength(3)
+            })
+        })
+
+        it('200: go to specified page', () => {
+          return request(app)
+            .get('/api/articles/1/comments?limit=4&p=3')
+            .expect(200)
+            .then(({ body }) => {
+              const { comments } = body;
+
+              expect(comments).toHaveLength(3)
+            })
+        })
+
+        it('200: returns total_count of comments regardless of limit or p', () => {
+          return request(app)
+            .get('/api/articles/1/comments?limit=2&p=3')
+            .expect(200)
+            .then(({ body }) => {
+              const { total_count } = body
+
+              expect(total_count).toBe(11);
+            })
+        })
+
+        it('400: responds when limit is non numeric', () => {
+          return request(app)
+            .get('/api/articles/1/comments?limit=not_a_limit')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('Limit must be numeric')
+            })
+        })
+
+        it('400: responds when page is non numeric', () => {
+          return request(app)
+            .get('/api/articles/1/comments?p=not_a_page')
+            .expect(400)
+            .then(({ body }) => {
+              const { msg } = body
+
+              expect(msg).toBe('Page must be numeric')
+            })
+        })
+      })
     })
   })
 

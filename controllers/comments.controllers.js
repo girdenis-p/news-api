@@ -1,5 +1,6 @@
 const { selectArticleById } = require("../models/articles.models");
-const { insertCommentByArticleId, selectArticleCommentsByArticleId, removeCommentById, selectCommentById, updateCommentVotes } = require("../models/comments.models")
+const { insertCommentByArticleId, selectArticleCommentsByArticleId, removeCommentById, selectCommentById, updateCommentVotes } = require("../models/comments.models");
+const { checkLimitAndPValid } = require("../utils/pagination");
 
 module.exports = {
 
@@ -20,14 +21,18 @@ module.exports = {
 
   getArticleCommentsByArticleId: function(req, res, next) {
     const { article_id } = req.params;
+    const { limit, p } = req.query
 
-    //Check article exists before selecting comments
-    selectArticleById(article_id)
+    checkLimitAndPValid(limit, p)
       .then(() => {
-        return selectArticleCommentsByArticleId(article_id)
+        return selectArticleById(article_id)
       })
-      .then((comments) => {
-        res.status(200).send({ comments });
+    //Check article exists before selecting comments
+      .then(() => {
+        return selectArticleCommentsByArticleId(article_id, { limit, p })
+      })
+      .then(({comments, total_count}) => {
+        res.status(200).send({ comments, total_count });
       })
       .catch(next);
   },

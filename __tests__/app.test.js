@@ -262,7 +262,7 @@ describe('app', () => {
     describe('GET', () => {
       it('200: responds with an array of article objects, each with all the article properties and comment count', () => {
         return request(app)
-          .get('/api/articles')
+          .get('/api/articles?limit=20')
           .expect(200)
           .then(({ body }) => {
             const { articles } = body;
@@ -287,7 +287,7 @@ describe('app', () => {
 
       it('200: responds with correct comment_count for articles', () => {
         return request(app)
-          .get('/api/articles')
+          .get('/api/articles?limit=20')
           .expect(200)
           .then(({ body }) => {
             const { articles } = body;
@@ -320,14 +320,14 @@ describe('app', () => {
       describe('queries', () => {
         it('200: can be queried by topic, filtering articles that have that topic', () => {
           return request(app)
-            .get('/api/articles?topic=mitch')
+            .get('/api/articles?topic=mitch&limit=20')
             .expect(200)
             .then(({ body }) => {
               const { articles } = body;
 
-              const expectedIds = [3, 6, 2, 12, 1, 9, 10, 4, 8, 11, 7];
-              for (let i = 0; i < articles.length; i++) {
-                expect(articles[i].article_id).toBe(expectedIds[i]);
+              expect(articles).toHaveLength(11)
+              for (const article of articles) {
+                expect(article).toHaveProperty('topic', 'mitch');
               }
             })
         })
@@ -356,7 +356,7 @@ describe('app', () => {
 
         it('200: can be queried to select which column to sort_by', () => {
           return request(app)
-            .get('/api/articles?topic=mitch&sort_by=article_id')
+            .get('/api/articles?topic=mitch&sort_by=article_id&limit=20')
             .expect(200)
             .then(({ body }) => {
               const { articles } = body;

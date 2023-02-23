@@ -1,5 +1,6 @@
 const { selectTopicBySlug, checkSlugExistsOrUndefined } = require("../models/topics.models");
-const { selectArticleById, selectArticles, updateArticleVotes } = require("../models/articles.models")
+const { selectArticleById, selectArticles, updateArticleVotes, insertArticle } = require("../models/articles.models");
+const { selectUserByUsername } = require("../models/users.models");
 
 
 module.exports = {
@@ -28,6 +29,21 @@ module.exports = {
         res.status(200).send({ article })
       })
       .catch(next);
+  },
+
+  postArticle: function(req, res, next) {
+    req.bodyTemplate = ['author', 'title', 'body', 'topic']
+
+    const { author, title, body, topic, article_img_url} = req.body
+
+    checkSlugExistsOrUndefined(topic)
+      .then(() => {
+        return insertArticle({author, title, body, topic, article_img_url})
+      })
+      .then((article) => {
+        res.status(201).send({ article })
+      })
+      .catch(next)
   },
 
   getArticles: function(req, res, next) {

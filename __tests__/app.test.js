@@ -438,6 +438,105 @@ describe('app', () => {
         })
       })
     })
+
+    describe('POST', () => {
+      it('201: responds with newly created article including a comment_count property', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            author: 'butter_bridge',
+            title: 'Test Title',
+            body: 'Test test test',
+            topic: 'paper',
+            article_img_url: 'example.jpg'
+          })
+          .expect(201)
+          .then(({ body }) => {
+            const { article } = body;
+
+            const expected = {
+              article_id: 13,
+              author: 'butter_bridge',
+              title: 'Test Title',
+              body: 'Test test test',
+              topic: 'paper',
+              article_img_url: 'example.jpg',
+              votes: 0,
+              created_at: expect.any(String),
+              comment_count: 0
+            }
+            expect(article).toMatchObject(expected);
+          })
+      })
+
+      it('400: responds when missing required keys', () => {
+
+        const requests = [];
+
+        const bodyTemplate = {
+          author: 'lurker',
+          title: 'Foo',
+          body: 'Foo Fop',
+          topic: 'paper'
+        }
+
+        for (const requiredKey of [
+          'author',
+          'title',
+          'body',
+          'topic',
+        ]) {
+          const malformedBody = {...bodyTemplate};
+          delete malformedBody[requiredKey];
+
+          const req = 
+          request(app)
+            .post('/api/articles')
+            .send(malformedBody)
+            .then(({ body }) => {
+              const { msg } = body
+
+              expect(msg).toBe(`Body must contain "${requiredKey}" property`)
+            })
+
+          requests.push(req)
+        }
+
+        return Promise.all(requests)
+      })
+
+      it('404: responds when topic does not exist', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            author: 'butter_bridge',
+            title: 'Title for Test',
+            body: 'body',
+            topic: 'invalid_slug'
+          })
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Topic with slug "invalid_slug" does not exist')
+          })
+      })
+
+      it('404: responds when author does not exist', () => {
+        return request(app)
+          .post('/api/articles')
+          .send({
+            author: 'not_a_valid_user',
+            title: 'Title for test',
+            body: 'body',
+            topic: 'cats'
+          })
+          .then(({ body }) => {
+            const { msg } = body
+
+            expect(msg).toBe('User with username "not_a_valid_user" does not exist')
+          })
+      })
+    })
   })
 
   describe('/api/articles/:article_id/comments', () => {

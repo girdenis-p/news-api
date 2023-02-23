@@ -88,5 +88,23 @@ module.exports = {
           return Promise.reject({status: 404, msg: `Article with article_id ${article_id} does not exist`});
         }
       })
+  },
+
+  insertArticle({author, title, body, topic, article_img_url }) {
+    return db.query(`
+    INSERT INTO articles
+      (author, title, body, topic, article_img_url)
+    VALUES
+      ($1, $2, $3, $4, $5)
+    RETURNING *;
+    `, [author, title, body, topic, article_img_url])
+      .then(({ rows }) => {
+        const article = rows[0];
+
+        //By default, comment_count will be 0
+        article.comment_count = 0;
+
+        return article;
+      })
   }
 }

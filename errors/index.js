@@ -15,7 +15,11 @@ module.exports = {
       next({status: 400, msg: `Body must contain "${missingProperty}" property`})
     } else if (err.code === '23503') {
       //Note this err.code is due a foreign key violation which currently is only caused by a non-existing user posting a comment
-      next({status: 404, msg: `Unable to post as "${req.body.username}" as user does not exist`})
+      if (req.body.author) {
+        next({status: 404, msg: `User with username "${req.body.author}" does not exist`})
+      } else {
+        next({status: 404, msg: `Unable to post as "${req.body.username}" as user does not exist`})
+      }
     } else {
       next(err);
     }

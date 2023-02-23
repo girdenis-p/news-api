@@ -640,6 +640,37 @@ describe('app', () => {
     })
   })
 
+  describe('/api/users/:username', () => {
+    describe('GET', () => {
+      it('200: responds with user object containing username, avatar_url and name', () => {
+        return request(app)
+          .get('/api/users/lurker')
+          .expect(200)
+          .then(({ body }) => {
+            const { user } = body
+
+            const expected = {
+              username: 'lurker',
+              name: 'do_nothing',
+              avatar_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'
+            }
+            expect(user).toMatchObject(expected)
+          })
+      })
+
+      it('404: responds when user with given username does no exist', () => {
+        return request(app)
+          .get('/api/users/user_that_does_not_exist')
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body
+
+            expect(msg).toBe('User with username "user_that_does_not_exist" does not exist')
+          })
+      })
+    })
+  })
+
   describe('/api/comments/:comment_id', () => {
     describe('DELETE', () => {
       it('204: deletes comment from database', () => {

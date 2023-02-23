@@ -631,7 +631,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Unable to post as "not_an_existing_user" as user does not exist')
+            expect(msg).toBe('User with username "not_an_existing_user" does not exist')
           })
       })
     })

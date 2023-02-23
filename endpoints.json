@@ -21,6 +21,18 @@
           }
         ]
       }
+    },
+    "POST": {
+      "description": "posts an article, initialises votes at 0",
+      "required fields": {
+        "author": "string",
+        "title": "string",
+        "body": "string",
+        "topic": "string"
+      },
+      "optional fields": {
+        "article_img_url": "string"
+      }
     }
   },
   "/api/articles/:article_id": {

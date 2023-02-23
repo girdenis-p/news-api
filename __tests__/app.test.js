@@ -63,7 +63,8 @@ describe('app', () => {
                 GET
               },
               '/api/articles': {
-                GET
+                GET,
+                POST
               },
               '/api/articles/:article_id': {
                 requirements,

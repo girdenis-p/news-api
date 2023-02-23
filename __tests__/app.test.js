@@ -78,6 +78,9 @@ describe('app', () => {
               '/api/users': {
                 GET
               },
+              '/api/users/:username': {
+                GET
+              },
               '/api/comments/:comment_id': {
                 requirements,
                 DELETE

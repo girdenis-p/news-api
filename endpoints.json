@@ -122,5 +122,17 @@
         ]
       }
     }
+  },
+  "/api/users/:username": {
+    "GET": {
+      "description": "serves up information about a user",
+      "example response": {
+        "user": {
+          "username": "Foo Bar",
+          "name":"Foo Bar",
+          "avatar_url": "example1.jpeg"
+        }
+      }
+    }
   }
 }

@@ -43,6 +43,21 @@ module.exports = {
           return Promise.reject({status: 404, msg: `Comment with comment_id ${comment_id} does not exist`})
         }
       })
+  },
+
+  updateCommentVotes(comment_id, inc_votes) {
+
+    if (inc_votes !== undefined && typeof inc_votes != 'number') {
+      return Promise.reject({status: 400, msg: 'inc_votes must be of type number'})
+    }
+
+    return db.query(`
+    UPDATE comments
+    SET votes = votes + $2
+    WHERE comment_id = $1
+    RETURNING *
+    `, [comment_id, inc_votes])
+      .then(({ rows }) => rows[0])
   }
 
 }

@@ -710,5 +710,82 @@ describe('app', () => {
           })
       })
     })
+
+    describe('PATCH', () => {
+      it('200: responds with comment with votes incremented by inc_votes', () => {
+        return request(app)
+          .patch('/api/comments/4')
+          .send({
+            inc_votes: -100
+          })
+          .expect(200)
+          .then(({ body }) => {
+            const { comment } = body;
+
+            const expected = {
+              comment_id: 4,
+              article_id: 1,
+              author: 'icellusedkars',
+              votes: -200,
+              created_at: expect.any(String)
+            }
+            expect(comment).toMatchObject(expected)
+          })
+      })
+
+      it('400: responds when :comment_id is non numeric', () => {
+        return request(app)
+          .patch('/api/comments/not_a_valid_id')
+          .send({
+            inc_votes: 3
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Bad request, expected numeric id')
+          })
+      })
+
+      it('404: responds when comment with :comment_id does not exist', () => {
+        return request(app)
+          .patch('/api/comments/50000')
+          .send({
+            inc_votes: 5
+          })
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Comment with comment_id 50000 does not exist')
+          })
+      })
+
+      it('400: responds when body is missing inc_votes', () => {
+        return request(app)
+          .patch('/api/comments/3')
+          .send({})
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Body must contain "inc_votes" property')
+          })
+      })
+
+      it('400: responds when inc_votes is non numeric', () => {
+        return request(app)
+          .patch('/api/comments/2')
+          .send({
+            inc_votes: 'invalid'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body
+
+            expect(msg).toBe('inc_votes must be of type number')
+          })
+      })
+    })
   })
 })

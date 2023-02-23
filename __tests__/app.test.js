@@ -27,6 +27,25 @@ describe('app', () => {
 
   describe('/api', () => {
     describe('GET', () => {
+
+      //These are templates to use
+      const requirements = expect.any(String)
+      const DELETE = {
+        description: expect.any(String)
+      }
+      const GET = {
+        description: expect.any(String),
+        "example response": expect.any(Object)
+      }
+      const PATCH = {
+        description: expect.any(String),
+        "required fields": expect.any(Object)
+      }
+      const POST = {
+        description: expect.any(String),
+        "required fields": expect.any(Object)
+      }
+
       it('200: responses with an object containing all endpoints, and their method', () => {
         return request(app)
           .get('/api')
@@ -36,27 +55,32 @@ describe('app', () => {
 
             const expectedMatch = {
               '/api' : {
-                'GET': expect.any(Object)
+                GET: {
+                  description: expect.any(String)
+                }
               },
               '/api/topics': {
-                'GET': expect.any(Object)
+                GET
               },
               '/api/articles': {
-                'GET': expect.any(Object)
+                GET
               },
               '/api/articles/:article_id': {
-                'GET': expect.any(Object),
-                'PATCH': expect.any(Object)
+                requirements,
+                GET,
+                PATCH
               },
               '/api/articles/:article_id/comments': {
-                'GET': expect.any(Object),
-                'POST': expect.any(Object)
+                requirements,
+                GET,
+                POST
               },
               '/api/users': {
-                'GET': expect.any(Object)
+                GET
               },
               '/api/comments/:comment_id': {
-                'DELETE': expect.any(Object)
+                requirements,
+                DELETE
               }
             }
             expect(api).toMatchObject(expectedMatch)

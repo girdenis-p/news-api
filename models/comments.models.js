@@ -3,7 +3,7 @@ const { paginate } = require('../utils/pagination.js');
 
 module.exports = {
 
-  selectArticleCommentsByArticleId(article_id, {limit = 10, p = 1}) {
+  selectArticleCommentsByArticleId(article_id, {limit, p}) {
     return db.query(`
     SELECT * FROM comments
     WHERE article_id = $1

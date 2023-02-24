@@ -27,7 +27,6 @@ module.exports = {
       .then(() => {
         return selectArticleById(article_id)
       })
-    //Check article exists before selecting comments
       .then(() => {
         return selectArticleCommentsByArticleId(article_id, { limit, p })
       })

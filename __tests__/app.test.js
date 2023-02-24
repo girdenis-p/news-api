@@ -859,24 +859,38 @@ describe('app', () => {
 
             const expected = [
               {
-                comment_id: 10,
-                body: 'git push origin master',
-                article_id: 3,
-                author: 'icellusedkars',
-                votes: 0,
-                created_at: '2020-06-20T07:24:00.000Z'
-              },
-              {
                 comment_id: 11,
                 body: 'Ambidextrous marsupial',
                 article_id: 3,
                 author: 'icellusedkars',
                 votes: 0,
                 created_at: '2020-09-19T23:10:00.000Z'
+              },
+              {
+                comment_id: 10,
+                body: 'git push origin master',
+                article_id: 3,
+                author: 'icellusedkars',
+                votes: 0,
+                created_at: '2020-06-20T07:24:00.000Z'
               }
             ];
             expect(comments[0]).toMatchObject(expected[0]);
             expect(comments[1]).toMatchObject(expected[1]);
+          })
+      })
+
+      it('200: responds with comments ordered with latest first', () => {
+        return request(app)
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then(({ body }) => {
+            const { comments } = body;
+
+            expect(comments).toBeSorted({
+              key: 'created_at',
+              descending: true
+            })
           })
       })
 

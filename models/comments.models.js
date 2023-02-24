@@ -7,6 +7,7 @@ module.exports = {
     return db.query(`
     SELECT * FROM comments
     WHERE article_id = $1
+    ORDER BY created_at DESC
     `, [article_id])
       .then(({ rows }) => {
         const {rows: comments, total_count} = paginate(rows, limit, p)

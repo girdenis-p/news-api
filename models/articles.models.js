@@ -109,7 +109,7 @@ module.exports = {
       .then(({ rows }) => {
         const article = rows[0];
 
-        //By default, comment_count will be 0
+        //By default, comment_count will be 0. This acceptable to do as there is no comment_count column in articles
         article.comment_count = 0;
 
         return article;

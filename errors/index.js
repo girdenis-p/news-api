@@ -2,19 +2,22 @@ module.exports = {
 
   handlePSQLErrors: function(err, req, res, next) {
     if (err.code === '22P02') {
-
-      let idFor;
-
-      const { path } = req.route;
-
-      //Using path as this middleware has no access to params
-      if (path.startsWith('/:comment_id')) {
-        idFor = 'comment'
-      } else if (path.startsWith('/:article_id')) {
-        idFor = 'article'
+      if (req.body.inc_votes !== undefined && typeof req.body.inc_votes !== 'number') {
+        next({status: 400, msg: 'inc_votes must be of type number'})
+      } else {  
+        let idFor;
+        
+        const { path } = req.route;
+        
+        //Using path as this middleware has no access to params
+        if (path.startsWith('/:comment_id')) {
+          idFor = 'comment'
+        } else if (path.startsWith('/:article_id')) {
+          idFor = 'article'
+        }
+        
+        next({status: 400, msg: `Expected numeric ${idFor}_id`})
       }
-
-      next({status: 400, msg: `Expected numeric ${idFor}_id`})
     } else if (err.code === '23502') {
       //23502 is caused due to a not null violation, this indicates that something is missing from the req.body
       const bodyProperties = Object.keys(req.body);

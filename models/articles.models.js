@@ -52,10 +52,6 @@ module.exports = {
   },
 
   updateArticleVotes(article_id, inc_votes) {
-    if (inc_votes !== undefined && typeof inc_votes !== 'number') {
-      return Promise.reject({status: 400, msg: 'inc_votes must be of type number'})
-    }
-
     return db.query(`
     UPDATE articles
     SET votes = votes + $2

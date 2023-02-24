@@ -297,7 +297,7 @@ describe('app', () => {
           })
       })
 
-      it('400: responds when inc_votes in non-numeric', () => {
+      it('400: responds when inc_votes is non-numeric', () => {
         return request(app)
           .patch('/api/articles/1')
           .send({
@@ -563,7 +563,7 @@ describe('app', () => {
             })
         })
 
-        it('200: can limit number articles on page to passed limit', () => {
+        it('200: can limit number of articles on page to passed limit', () => {
           return request(app)
             .get('/api/articles?sort_by=article_id&order=asc&limit=3')
             .expect(200)
@@ -914,7 +914,7 @@ describe('app', () => {
             })
         })
 
-        it('200: go to specified page', () => {
+        it('200: goes to specified page', () => {
           return request(app)
             .get('/api/articles/1/comments?limit=4&p=3')
             .expect(200)
@@ -1020,7 +1020,7 @@ describe('app', () => {
           })
       })
 
-      it('404: responds when user with given username does no exist', () => {
+      it('404: responds when user with given username does not exist', () => {
         return request(app)
           .get('/api/users/user_that_does_not_exist')
           .expect(404)

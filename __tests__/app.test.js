@@ -176,7 +176,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Bad request, expected numeric id');
+            expect(msg).toBe('Expected numeric article_id');
           })
       })
     })
@@ -212,7 +212,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Bad request, expected numeric id')
+            expect(msg).toBe('Expected numeric article_id')
           })
       })
 
@@ -666,7 +666,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Bad request, expected numeric id')
+            expect(msg).toBe('Expected numeric article_id')
           })
       })
 
@@ -778,7 +778,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Bad request, expected numeric id')
+            expect(msg).toBe('Expected numeric article_id')
           })
       })
 
@@ -945,7 +945,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Bad request, expected numeric id')
+            expect(msg).toBe('Expected numeric comment_id')
           })
       })
 
@@ -993,7 +993,7 @@ describe('app', () => {
           .then(({ body }) => {
             const { msg } = body;
 
-            expect(msg).toBe('Bad request, expected numeric id')
+            expect(msg).toBe('Expected numeric comment_id')
           })
       })
 

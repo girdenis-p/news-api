@@ -35,6 +35,14 @@ module.exports = {
     `, [comment_id]);
   },
 
+  removeCommentsByArticleId(article_id) {
+
+    return db.query(`
+    DELETE FROM comments
+    WHERE article_id = $1
+    `, [article_id])
+  },
+
   selectCommentById(comment_id) {
 
     return db.query(`

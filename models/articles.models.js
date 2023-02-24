@@ -110,5 +110,12 @@ module.exports = {
 
         return article;
       })
+  },
+
+  removeArticleById(article_id) {
+    return db.query(`
+    DELETE FROM articles
+    WHERE article_id = $1
+    `, [article_id])
   }
 }

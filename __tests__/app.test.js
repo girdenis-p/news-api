@@ -310,6 +310,38 @@ describe('app', () => {
           })
       })
     })
+
+    describe('DELETE', () => {
+      it('204: removes comments related to article from the database', () => {
+        return request(app)
+          .delete('/api/articles/1')
+          .expect(204)
+          .then(() => {
+            return db.query(`
+            SELECT * FROM comments
+            WHERE article_id = 1
+            `)
+          })
+          .then(({ rows }) => {
+            expect(rows).toHaveLength(0);
+          })
+      })
+
+      it('204: removes the article with :article_id', () => {
+        return request(app)
+          .delete('/api/articles/2')
+          .expect(204)
+          .then(() => {
+            return db.query(`
+            SELECT * FROM articles
+            WHERE article_id = 2
+            `)
+          })
+          .then(({ rows }) => {
+            expect(rows).toHaveLength(0)
+          })
+      })
+    })
   })
   
   describe('/api/articles', () => {

@@ -1,7 +1,8 @@
 const { selectTopicBySlug, checkSlugExistsOrUndefined } = require("../models/topics.models");
-const { selectArticleById, selectArticles, updateArticleVotes, insertArticle } = require("../models/articles.models");
+const { selectArticleById, selectArticles, updateArticleVotes, insertArticle, removeArticleById } = require("../models/articles.models");
 const { selectUserByUsername } = require("../models/users.models");
 const { checkLimitAndPValid } = require("../utils/pagination");
+const { removeCommentsByArticleId } = require("../models/comments.models");
 
 
 module.exports = {
@@ -30,6 +31,19 @@ module.exports = {
         res.status(200).send({ article })
       })
       .catch(next);
+  },
+
+  deleteArticleById: function(req, res, next) {
+    const { article_id } = req.params;
+
+    removeCommentsByArticleId(article_id)
+      .then(() => {
+        return removeArticleById(article_id)
+      })
+      .then(() => {
+        res.sendStatus(204)
+      })
+      .catch(next)
   },
 
   postArticle: function(req, res, next) {

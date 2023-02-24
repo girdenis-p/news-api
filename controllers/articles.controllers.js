@@ -35,7 +35,10 @@ module.exports = {
   deleteArticleById: function(req, res, next) {
     const { article_id } = req.params;
 
-    removeCommentsByArticleId(article_id)
+    selectArticleById(article_id)
+      .then(() => {
+        return removeCommentsByArticleId(article_id)
+      })
       .then(() => {
         return removeArticleById(article_id)
       })

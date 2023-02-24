@@ -341,6 +341,28 @@ describe('app', () => {
             expect(rows).toHaveLength(0)
           })
       })
+
+      it('400: responds when :article_id is non numeric', () => {
+        return request(app)
+          .delete('/api/articles/invalid_article_id')
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Expected numeric article_id')
+          })
+      })
+
+      it('404: responds when article with :article_id does not exist', () => {
+        return request(app)
+          .delete('/api/articles/4000')
+          .expect(404)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Article with article_id 4000 does not exist')
+          })
+      })
     })
   })
   

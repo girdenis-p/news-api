@@ -1,6 +1,5 @@
-const { selectTopicBySlug, checkSlugExistsOrUndefined } = require("../models/topics.models");
+const { checkSlugExistsOrUndefined } = require("../models/topics.models");
 const { selectArticleById, selectArticles, updateArticleVotes, insertArticle, removeArticleById } = require("../models/articles.models");
-const { selectUserByUsername } = require("../models/users.models");
 const { checkLimitAndPValid } = require("../utils/pagination");
 const { removeCommentsByArticleId } = require("../models/comments.models");
 

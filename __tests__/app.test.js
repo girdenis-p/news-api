@@ -60,7 +60,8 @@ describe('app', () => {
                 }
               },
               '/api/topics': {
-                GET
+                GET,
+                POST
               },
               '/api/articles': {
                 GET,

@@ -6,7 +6,7 @@
   },
   "/api/articles": {
     "GET": {
-      "description": "serves up all articles",
+      "description": "serves up a page of articles",
       "example response": {
         "articles": [
           {
@@ -63,7 +63,7 @@
   "/api/articles/:article_id/comments": {
     "requirements": ":article_id must be numeric",
     "GET": {
-      "description": "serves up all the comments for an article",
+      "description": "serves up a page of comments for an article",
       "example response": {
         "comments": [
           {
@@ -120,7 +120,17 @@
           }
         ]
       }
+    },
+    "POST": {
+      "description": "creates a new topic",
+      "required fields": {
+        "slug": "string"
+      },
+      "optional fields": {
+        "description": "string"
+      }
     }
+
   },
   "/api/users": {
     "GET": {

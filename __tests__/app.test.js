@@ -70,7 +70,8 @@ describe('app', () => {
               '/api/articles/:article_id': {
                 requirements,
                 GET,
-                PATCH
+                PATCH,
+                DELETE
               },
               '/api/articles/:article_id/comments': {
                 requirements,

@@ -37,6 +37,9 @@
   },
   "/api/articles/:article_id": {
     "requirements": ":article_id must be numeric",
+    "DELETE": {
+      "description": "deletes an article and all its comments"
+    },
     "GET": {
       "description": "serves up an article including it's body",
       "example response": {
@@ -96,7 +99,7 @@
   "/api/comments/:comment_id": {
     "requirements": ":comment_id must be numeric",
     "DELETE": {
-      "description": "delete a comment"
+      "description": "deletes a comment"
     },
     "PATCH": {
       "description": "increments the votes on a comment by inc_votes, allows decrementing when inc_votes is negative",

@@ -1,4 +1,5 @@
 const db = require('../db/connection.js');
+const { paginate } = require('../utils/pagination.js');
 
 module.exports = {
 
@@ -8,10 +9,9 @@ module.exports = {
     WHERE article_id = $1
     `, [article_id])
       .then(({ rows }) => {
-        const total_count = rows.length;
-        const comments = rows.slice((p - 1) * limit, p * limit)
+        const {rows: comments, total_count} = paginate(rows, limit, p)
 
-        return {comments, total_count};
+        return {comments, total_count}
       });
   },
 

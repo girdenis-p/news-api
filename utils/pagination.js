@@ -16,6 +16,13 @@ module.exports  = {
 
       resolve();
     })
+  },
+
+  paginate(rows, limit = 10, p = 1) {
+    const total_count = rows.length;
+    const paginatedRows = rows.slice((p - 1) * limit, p * limit)
+
+    return {rows: paginatedRows, total_count}
   }
 
 }

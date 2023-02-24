@@ -121,6 +121,59 @@ describe('app', () => {
           })
       })
     })
+
+    describe('POST', () => {
+      it('201: responds with created topic', () => {
+        return request(app)
+          .post('/api/topics')
+          .send({
+            slug: 'Foo',
+            description: 'Foo description'
+          })
+          .expect(201)
+          .then(({ body }) => {
+            const { topic } = body;
+
+            expected = {
+              slug: 'Foo',
+              description: 'Foo description'
+            }
+            expect(topic).toEqual(expected)
+            return db.query("SELECT * FROM topics WHERE slug = 'Foo'")
+          })
+          .then(({ rows }) => {
+            expect(rows).toHaveLength(1);
+          })
+      })
+
+      it('400: responds when slug is not in body', () => {
+        return request(app)
+          .post('/api/topics')
+          .send({
+            description: 'Test'
+          })
+          .expect(400)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Body must contain "slug" property')
+          })
+      })
+
+      it('409: responds when there is already a topic with slug given', () => {
+        return request(app)
+          .post('/api/topics')
+          .send({
+            slug: 'paper'
+          })
+          .expect(409)
+          .then(({ body }) => {
+            const { msg } = body;
+
+            expect(msg).toBe('Topic with slug "paper" already exists')
+          })
+      })
+    })
   })
 
   describe('/api/articles/:article_id', () => {

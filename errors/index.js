@@ -31,6 +31,9 @@ module.exports = {
     } else if (err.code === '23503') {
       //Note this err.code is due a foreign key violation. Which is caused when posting an article or comment with an invalid user
       next({status: 404, msg: `User with username "${req.body.author || req.body.username}" does not exist`})
+    } else if (err.code === '23505') {
+      //This err.code is due to a unique key violation which will occur when attempting to post a topic with an existing slug
+      next({status: 409, msg: `Topic with slug "${req.body.slug}" already exists`})
     } else {
       next(err);
     }

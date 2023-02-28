@@ -2,6 +2,7 @@ const { checkSlugExistsOrUndefined } = require("../models/topics.models");
 const { selectArticleById, selectArticles, updateArticleVotes, insertArticle, removeArticleById } = require("../models/articles.models");
 const { checkLimitAndPValid } = require("../utils/pagination");
 const { removeCommentsByArticleId } = require("../models/comments.models");
+const { selectUserByUsername } = require("../models/users.models");
 
 
 module.exports = {
@@ -64,7 +65,7 @@ module.exports = {
   },
 
   getArticles: function(req, res, next) {
-    const { topic , sort_by, order, limit, p } = req.query;
+    const { topic , sort_by, order, author, limit, p } = req.query;
 
     //Check whether limit or p is incorrect before querying anything
     checkLimitAndPValid(limit, p)
@@ -72,7 +73,12 @@ module.exports = {
         return checkSlugExistsOrUndefined(topic)
       })
       .then(() => {
-        return selectArticles({ topic, sort_by, order, limit, p})
+        if (author) {
+          return selectUserByUsername(author)
+        }
+      })
+      .then(() => {
+        return selectArticles({ topic, sort_by, order, author, limit, p})
       })
       .then(({articles, total_count}) => {
         res.status(200).send({ articles, total_count });

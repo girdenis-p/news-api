@@ -3,7 +3,7 @@ const { paginate } = require('../utils/pagination.js');
 
 module.exports = {
   
-  selectArticles({topic, sort_by = 'created_at', order = 'desc', limit, p}) {
+  selectArticles({topic, sort_by = 'created_at', order = 'desc', author, limit, p}) {
     let articlesQuery = `
     SELECT arts.author AS author, title, arts.article_id AS article_id, topic, arts.created_at AS created_at, arts.votes AS votes, article_img_url, COUNT(coms.article_id) AS comment_count
     FROM
@@ -13,8 +13,17 @@ module.exports = {
     const queryParams = [];
     
     if (topic) {
-      articlesQuery += ' WHERE topic = $1 '
+      articlesQuery += ` WHERE topic = $1 `
       queryParams.push(topic)
+    }
+
+    if (author) {
+      if (!queryParams.length) {
+        articlesQuery += ` WHERE arts.author = $1 `
+      } else {
+        articlesQuery += ` AND arts.author = $2 `
+      }
+      queryParams.push(author)
     }
 
     articlesQuery += ' GROUP BY arts.author, title, arts.article_id, topic, arts.created_at, arts.votes, article_img_url '

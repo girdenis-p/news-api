@@ -546,6 +546,32 @@ describe('app', () => {
               expect(msg).toBe('The only valid order options are "asc" or "desc", received: "invalid_order"')
             })
         })
+
+        it('200: can be queried by author, filtering articles that have that author', () => {
+          return request(app)
+            .get('/api/articles?author=rogersop&topic=mitch')
+            .expect(200)
+            .then(({ body }) => {
+              const { articles } = body;
+
+              expect(articles).toHaveLength(2)
+
+              for (const article of articles) {
+                expect(article.author).toBe('rogersop')
+              }
+            })
+        })
+
+        it('404: responds when no user with username of queried author present', () => {
+          return request(app)
+            .get('/api/articles?author=author_that_does_not_exist')
+            .expect(404)
+            .then(({ body }) => {
+              const { msg } = body;
+
+              expect(msg).toBe('User with username "author_that_does_not_exist" does not exist')
+            })
+        })
       })
 
       describe('pagination', () => {

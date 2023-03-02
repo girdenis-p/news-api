@@ -21,14 +21,14 @@ module.exports = {
 
   getArticleCommentsByArticleId: function(req, res, next) {
     const { article_id } = req.params;
-    const { limit, p } = req.query
+    const { limit, p: page } = req.query
 
-    checkLimitAndPValid(limit, p)
+    checkLimitAndPValid(limit, page)
       .then(() => {
         return selectArticleById(article_id)
       })
       .then(() => {
-        return selectArticleCommentsByArticleId(article_id, { limit, p })
+        return selectArticleCommentsByArticleId(article_id, { limit, page })
       })
       .then(({comments, total_count}) => {
         res.status(200).send({ comments, total_count });

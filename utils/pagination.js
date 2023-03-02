@@ -1,6 +1,6 @@
 module.exports  = {
 
-  checkLimitAndPValid(limit, p) {
+  checkLimitAndPValid(limit, page) {
     return new Promise((resolve, reject) => {
       if (limit) {
         if (Number.isNaN(+limit)) {
@@ -8,8 +8,8 @@ module.exports  = {
         }
       }
 
-      if (p) {
-        if (Number.isNaN(+p)) {
+      if (page) {
+        if (Number.isNaN(+page)) {
           reject({status: 400, msg: 'Page must be numeric'})
         }
       }
@@ -18,9 +18,9 @@ module.exports  = {
     })
   },
 
-  paginate(rows, limit = 10, p = 1) {
+  paginate(rows, limit = 10, page = 1) {
     const total_count = rows.length;
-    const paginatedRows = rows.slice((p - 1) * limit, p * limit)
+    const paginatedRows = rows.slice((page - 1) * limit, page * limit)
 
     return {rows: paginatedRows, total_count}
   }

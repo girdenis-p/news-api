@@ -65,10 +65,10 @@ module.exports = {
   },
 
   getArticles: function(req, res, next) {
-    const { topic , sort_by, order, author, limit, p } = req.query;
+    const { topic , sort_by, order, author, limit, p: page } = req.query;
 
-    //Check whether limit or p is incorrect before querying anything
-    checkLimitAndPValid(limit, p)
+    //Check whether limit or page is incorrect before querying anything
+    checkLimitAndPValid(limit, page)
       .then(() => {
         return checkSlugExistsOrUndefined(topic)
       })
@@ -78,7 +78,7 @@ module.exports = {
         }
       })
       .then(() => {
-        return selectArticles({ topic, sort_by, order, author, limit, p})
+        return selectArticles({ topic, sort_by, order, author, limit, page})
       })
       .then(({articles, total_count}) => {
         res.status(200).send({ articles, total_count });

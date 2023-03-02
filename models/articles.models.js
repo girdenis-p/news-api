@@ -3,7 +3,7 @@ const { paginate } = require('../utils/pagination.js');
 
 module.exports = {
   
-  selectArticles({topic, sort_by = 'created_at', order = 'desc', author, limit, p}) {
+  selectArticles({topic, sort_by = 'created_at', order = 'desc', author, limit, page}) {
     let articlesQuery = `
     SELECT arts.author AS author, title, arts.article_id AS article_id, topic, arts.created_at AS created_at, arts.votes AS votes, article_img_url, COUNT(coms.article_id) AS comment_count
     FROM
@@ -49,7 +49,7 @@ module.exports = {
 
     return db.query(articlesQuery, queryParams)
       .then(({ rows }) => {
-        return paginate(rows, limit, p)
+        return paginate(rows, limit, page)
       })
       .then(({ rows: articles , total_count}) => {
         articles.forEach(article => {

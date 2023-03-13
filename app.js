@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 
-const { handle500StatusCodes, handlePSQLErrors, handleCustomErrors, catchPaginationErrors } = require('./errors');
+const { handle500StatusCodes, handlePSQLErrors, handleCustomErrors } = require('./errors');
 
 const apiRouter = require('./routes/api-router')
 

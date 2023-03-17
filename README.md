@@ -9,10 +9,10 @@ https://news-api-project.onrender.com/api
 This api is intended to provide a way to interact with a store of components that one would expect on a news site such as articles and comments.
 ### Key Features 
   - Retrieving comments by article and articles by id
-  - Comments are linked to articles and can be posted to any existing article.
-  - Articles and comments are linked to existing users.
+  - Comments are linked to articles and can be posted to any existing article
+  - Articles and comments are linked to existing users
   - Managing user content such as being able to delete comments
-  - Voting system on comments.
+  - Voting system on comments
 
 ## Setup
 
